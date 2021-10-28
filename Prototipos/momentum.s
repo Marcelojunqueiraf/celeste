@@ -7,18 +7,26 @@ old_position: .word 0, 100
 old_background: .space 256
 player: .space 256
 frogger: .string "fase1.bin"
+character: .string "player.bin"
 .text
 
-	#load player sprite
-	la t0, player
-	li t1, 256
-	add t1, t0, t1
-	li t2, 0xa7a7a7a7
-	
-load.loop: 
-	sw t2, 0(t0)
-	addi t0, t0, 4
-	bne t0, t1, load.loop
+
+	#load player
+	#open
+	la a0, character
+	li a1, 0
+	li a7, 1024
+	ecall#open file
+	mv t0, a0 #save descriptor
+	#read
+	la a1, player #frame 0
+	li a2, 256 #size
+	li a7, 63 #read file
+	ecall
+	#close file
+	mv a0, t0
+	li a7 57
+	ecall #close file
 
 
 	#draw background in the start of the level
@@ -140,17 +148,12 @@ DRAW_PLAYER:
 	call COPY
 	
 	#draw player
-	#la t0, position
-	#lw a0, 0(t0) #X
-	#lw a1, 4(t0) #Y
-	#la a3, player #sprite
-	#call DRAW_SPRITE
-	#draw player as a square
 	la t0, position
-	lw a0, 0(t0)
-	lw a1, 4(t0)
-	li a3, 0x7a7a7a7a
-	call DRAW_RECT
+	lw a0, 0(t0) #X
+	lw a1, 4(t0) #Y
+	la a3, player #sprite
+	call DRAW_SPRITE
+
  
 	lw ra, 0(sp)
 	addi sp, sp, 4 
