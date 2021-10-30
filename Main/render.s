@@ -29,7 +29,6 @@ RENDER:
 DRAW_PLAYER: 	
 	addi sp, sp, -4
 	sw ra, 0(sp)
-
 	
 	#clear
 	lw a0, 0(s1) #X

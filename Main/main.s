@@ -12,7 +12,7 @@ fase1: .string "fase1.bin"
 character: .string "player.bin"
 lastTime: .word 0
 .text
-    call LOAD_IMAGES #carrega background e player
+	call LOAD_IMAGES #carrega background e player
 
 	li a0, 100
 	li a7, 32
@@ -56,31 +56,35 @@ INPUT_CALL:
     ret
 
 FISICA_CALL:
-    addi sp, sp, -4 
+	addi sp, sp, -4 
 	sw ra, 0(sp)
-    li a0, 0 #set parameters
+	li a0, 0 #set parameters
 	call FISICA
-    lw ra, 0(sp)
-    addi sp, sp, 4
-    ret
-	
+	lw ra, 0(sp)
+	addi sp, sp, 4
+	ret	
 MOVE_CALL:
     addi sp, sp, -4 
 	sw ra, 0(sp)
-    li a0, 0 #set parameters
+	la a0, position
+	la a1, speed
 	call MOVE
-    lw ra, 0(sp)
-    addi sp, sp, 4
-    ret
+	lw ra, 0(sp)
+	addi sp, sp, 4
+	ret
 
 RENDER_CALL:
-    addi sp, sp, -4 
+	addi sp, sp, -4 
 	sw ra, 0(sp)
-    li a0, 0 #set parameters
+	#params
+	la a0 old_background
+	la a1 old_position
+	la a2 position
+	la a3 player
 	call RENDER
-    lw ra, 0(sp)
-    addi sp, sp, 4
-    ret
+ 	lw ra, 0(sp)
+	addi sp, sp, 4
+	ret
 
 LOAD_IMAGES:
 	addi sp, sp, -4
@@ -119,7 +123,16 @@ LOAD_IMAGES:
 	mv a0, t0
 	li a7 57
 	ecall #close file
+	
+	la s0 old_background
+	la s1 old_position
+	la s2 position
+	la s3 player
 	call COPY
+	la s0 old_background
+	la s1 old_position
+	la s2 position
+	la s3 player
 	call DRAW_PLAYER
 
 	lw ra, 0(sp)
