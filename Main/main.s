@@ -3,7 +3,7 @@
 .data
 h_state: .word 0
 v_state: .word 0
-speed: .word 4, 0
+speed: .word -4, 0
 position: .word 64, 92
 old_position: .word 0, 100
 old_background: .space 256
