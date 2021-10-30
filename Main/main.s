@@ -4,11 +4,13 @@
 h_state: .word 0
 v_state: .word 0
 speed: .word 4, 0
-position: .word 0, 100
+position: .word 64, 92
 old_position: .word 0, 100
 old_background: .space 256
 player: .space 256
 fase1: .string "fase1.bin"
+#fase1: .string "fase1_colider.bin"
+colider1: .string "fase1_colider.bin"
 character: .string "player.bin"
 lastTime: .word 0
 .text
@@ -68,6 +70,7 @@ MOVE_CALL:
 	sw ra, 0(sp)
 	la a0, position
 	la a1, speed
+	li a2, 0xff100000
 	call MOVE
 	lw ra, 0(sp)
 	addi sp, sp, 4
@@ -116,6 +119,22 @@ LOAD_IMAGES:
 	mv t0, a0 #save descriptor
 	#read
 	li a1, 0xff000000 #frame 0
+	li a2, 76800 #size
+	li a7, 63 #read file
+	ecall
+	#close file
+	mv a0, t0
+	li a7 57
+	ecall #close file
+	#draw background in the start of the level
+	#open
+	la a0, colider1
+	li a1, 0
+	li a7, 1024
+	ecall#open file
+	mv t0, a0 #save descriptor
+	#read
+	li a1, 0xff100000 #frame 1
 	li a2, 76800 #size
 	li a7, 63 #read file
 	ecall
