@@ -61,6 +61,7 @@ fim_fis:                #checagem de velocidades , t4=hspeed t5=vspeed
     li t6, m_h_max
     blt t4, t6, v_over
     j no_check
+    sw t5, 4(a1)
 
 h_over: mv t4, t6
 	j v_check
