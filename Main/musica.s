@@ -1,30 +1,33 @@
-# # Exemplo de como setar uma musica
-# .include "Tracks.s" # Modelo: Volume, Nota atual, número de notas, pausa, tempo, nota, tempo, nota, tempo...
-# .data
-# Musica0: .word 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 # Numero de tracks dessa musica, track0, track1...
-# .text
-# SetMusic0:	la a0, Musica0
-#		 la a1, Track1
-#		 sw a1, 4(a0)
-#		 la a1, Track2
-#		 sw a1, 8(a0)
-#		 la a1, Track3
-#		 sw a1, 12(a0)
-#		 la a1, Track4
-#		 sw a1, 16(a0)
-#		 la a1, Track5
-#		 sw a1, 20(a0)
-#		 la a1, Track6
-#		 sw a1, 24(a0)
-#		 la a1, Track7
-#		 sw a1, 28(a0)
-#		 la a1, Track8
-#		 sw a1, 32(a0)
-#		 ret
+## MIDI Multitracking
+# Exemplo de como setar uma musica
+
+.include "Bad_Apple.s" # Modelo: Volume, Nota atual, número de notas, pausa, tempo, nota, tempo, nota, tempo...
+.data
+Musica0: .word 8, 0, 0, 0, 0, 0, 0, 0, 0
 
 .text
-## MIDI Multitracking
+# Rotina
+SET_MUSIC:	la a0, Musica0
+		la a1, Track0
+		sw a1, 4(a0)
+		la a1, Track1
+		sw a1, 8(a0)
+		la a1, Track2
+		sw a1, 12(a0)
+		la a1, Track3
+		sw a1, 16(a0)
+		la a1, Track4
+		sw a1, 20(a0)
+		la a1, Track5
+		sw a1, 24(a0)
+		la a1, Track6
+		sw a1, 28(a0)
+		la a1, Track7
+		sw a1, 32(a0)
+		ret
 
+
+<<<<<<< HEAD
 # Rotina a0 = dT
 MUSIC:
     addi sp, sp, -4 
@@ -38,29 +41,31 @@ MUSIC:
     ret			# Retorna o comando para Main
 		
 		
+=======
+>>>>>>> 1ee76ee9c02edc63827e2e5ff4574e851a90dc78
 # Rotina a0 = dT, a1 = Endereco da Array de tracks da musica atual
-UpdateTracks:	addi sp, sp, 4
+MUSIC:	addi sp, sp, -4
 		sw ra, 0(sp) 
 		
 		mv a2, a1
 		lw a3, 0(a2)
 		addi a2, a2, 4
 Loop0:		beqz a3, Fim0
-		addi sp, sp, 8
-		sw a2, -4(sp)
-		sw a3, 0(sp)
+		addi sp, sp, -8
+		sw a2, 0(sp)
+		sw a3, 4(sp)
 		lw a1, 0(a2)		# a1 = Endereco da Track atual
 		jal AttNotas
-		lw a3, 0(sp)	
-		lw a2, -4(sp)
-		addi sp, sp, -8
+		lw a3, 4(sp)	
+		lw a2, 0(sp)
+		addi sp, sp, 8
 		addi a3, a3, -1
 		addi a2, a2, 4
 		j Loop0
 		
 Fim0:		lw ra, 0(sp)
-		addi sp, sp, -4
-		ret			# Retorna o comando para Music
+		addi sp, sp, 4
+		ret			# Retorna o comando para MUSIC_CALL
 		
 		
 # Rotina a0 = dT, a1 = Endereco da Track Atual
@@ -85,7 +90,7 @@ AttNotas:	lw a4, 8(a1) 		# a4 = Numero de notas restantes //
 		
 		beqz a4, Fim1
 		
-		addi sp, sp, 4
+		addi sp, sp, -4
 		sw a0, 0(sp)
 		addi a2, a2, 8
 		mv a4, a1
@@ -102,6 +107,6 @@ AttNotas:	lw a4, 8(a1) 		# a4 = Numero de notas restantes //
 		# a4, a5 are now free!
 		ecall
 		lw a0, 0(sp)
-		addi sp, sp, -4
+		addi sp, sp, 4
 		
 Fim1:		ret			# Retorna o comando para UpdateTracks
