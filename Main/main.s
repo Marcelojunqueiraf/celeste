@@ -20,39 +20,23 @@ lastTime: .word 0
 .text
 	call LOAD_IMAGES #carrega background e player
 	call SET_MUSIC #carrega a musica
-	
-	li a0, 100
-	li a7, 32
-	ecall #delay inicial
 
+game_loop:
 	csrr s11, time #s11 = last time
-	j game_loop
+	li s8, 50	# tempo de cada frame
 	
-fora_loop_input:
+	input_loop:	
+		csrr s10, time #s10 = current time
+		sub s9, s10, s11 #s10 = delta time
+		call INPUT_CALL
+	bltu s9, s8, input_loop
+	
+	mv a0, s9	# a0 = dT
+	call MUSIC_CALL
 	call FISICA_CALL
 	call MOVE_CALL
-	# li s7, 0
-	csrr s11, time #s11 = last time
-game_loop:	
-	csrr s10, time #s10 = current time
-	sub s9, s10, s11 #s10 = delta time
-		
-	call INPUT_CALL
-	
-	li s8, 50	# tempo de cada frame
-	bltu s9, s8, game_loop
-	mv s11, s10 	# atualiza tempo anterior
-	# add s7, s7, s9
-		
-	mv a0, s9
-	call MUSIC_CALL	# a0 = dT
 	call RENDER_CALL
-	
-	# li s9, 100 #100ms
-	# bgeu s7, s9, fora_loop_input #delta time > 100ms
-	# j game_loop
-	
-	j fora_loop_input
+j game_loop
 	
 FIM:	li a7, 10		# Exit
 	ecall
