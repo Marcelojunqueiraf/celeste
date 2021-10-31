@@ -1,5 +1,5 @@
 .data
-.eqv gravity_acc 2
+.eqv gravity_acc 1
 .eqv wall_slide_acc 1
 .eqv dash_speed
 .eqv h_resist 1
@@ -20,6 +20,13 @@ FISICA:
     lw t0, (a0)  #h_state (-1,0,1)
     lw t1, 4(a0) #v_state (-1,0,1)
     lw t2, 8(a0) #grounded
+    #
+    mv t6, a0 
+    mv  a0,t2
+	li a7 1
+	ecall
+	mv a0, t6
+	#
     lw t3, 12(a0) #dash_key
     lw t4, (a1) #h_speed
     lw t5, 4(a1) #v_speed)
@@ -51,25 +58,32 @@ air:    blt t1, zero, jump
 air2:	bgt t3, zero, exec_dash
 	j fim_fis
 
-jump:  	blt t2, zero, wall_jump
+jump:  	sw zero, 4(a0)
+	blt t2, zero, wall_jump
 	bgt  t2,zero, air2
 	addi t5,t5, v_acc
+	li a3, 1
+	sw a3, 8(a0)
 	j air2
 
 wall_jump: lw a3, 20(a0) #wall
+	li a4, 1
+	sw a4, 8(a0)
 	bgt   a3, zero, dir
-	addi t5,t5, v_acc
-	addi t4,t4 , h_acc
+	li t5,  -9
+	li t4, 9
+	sw zero, 20(a0)
         j fim_fis
         
-dir:	addi t5,t5, v_acc
-	addi t4,t4 , m_h_acc
+dir:	li t5, -9
+	li t4, -9
+	sw zero, 20(a0)
         j fim_fis
     
 exec_dash:  sw zero, 12(a0) #zera dash key
 	lw a3, 16(a0)  
 	beqz a3, fim_fis
-	#sw zero, 16(a0)  #zera dash
+	sw zero, 16(a0)  #zera dash
 	
 	bgt t0,zero, right_dash                  #t0 hstate, t1, vstate
 n_r_dash:blt t0, zero, left_dash

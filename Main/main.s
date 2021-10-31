@@ -6,7 +6,7 @@ v_state: .word 0
 grounded: .word 0
 dash_key: .word 0
 dash:  .word 1
-wall: .word 1
+wall: .word 0
 speed: .word 0, 4
 position: .word 72, 120
 old_position: .word 0, 100
@@ -80,10 +80,6 @@ MOVE_CALL:
 	li a2, 0xff100000
 	la a3, h_state
 	call MOVE
-	la a0, h_state
-	lw a0, 8(a0)
-	li a7 1
-	ecall
 	lw ra, 0(sp)
 	addi sp, sp, 4
 	ret
