@@ -19,8 +19,6 @@ MOVE:
 	mv s1, a1
 	mv s3, a2
 	
-	li t0, 1
-	sw t0, 8(a2) #grounded = 1(air)
 	
 	bgt s2, zero, right
 	blt s2, zero, left
@@ -105,7 +103,8 @@ move_r.skip_death:
 	sw t0, 8(a2) #grounded = -1(wall)
 	li t0 1
 	sw t0, 20(a2) #wall = 1(right)
-	sw zero 0(a1) #x speed = 0
+	li t0, 4
+	sw t0 0(a1) #x speed = 4
 	j move_r.fim
 move_r.skip_wall:
 	addi t2, t2, 320
@@ -149,8 +148,9 @@ move_l.skip_death:
 	bne t1, t0, move_l.skip_wall
 	li t0, -1
 	sw t0, 8(a2) #grounded = -1(wall)
-	sw t0, 20(a2) #wall = -1(left)
-	sw zero 0(a1) #x speed = 0
+	sw t0, 20(a2) #wall = -1(left)	
+	li t0, -4
+	sw t0 0(a1) #x speed = -4
 	
 	j move_l.fim
 move_l.skip_wall:
@@ -237,7 +237,8 @@ move_d.skip_death:
 	sw zero, 8(a2) #grounded = 0(ground)
 	li t0, 1
 	sw t0, 16(a2) #dash = 1 (enable dash)
-	sw zero 4(a1) #y speed = 0
+	li t0, 4
+	sw t0 4(a1) #y speed = 4
 	j move_d.fim
 move_d.skip_wall:
 	addi t2, t2, 4
