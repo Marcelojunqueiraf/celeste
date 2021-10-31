@@ -4,7 +4,9 @@
 h_state: .word 0
 v_state: .word 0
 grounded: .word 0
-dash: .word 0
+dash_key: .word 0
+dash:  .word 1
+wall: .word 1
 speed: .word 0, 4
 position: .word 72, 120
 old_position: .word 0, 100
@@ -26,7 +28,7 @@ game_loop:
     input_loop:
 	csrr t0 time #t0=current time
 	sub t0 t0 s11 #t0 = delta time
-	li t1, 200 #200ms
+	li t1, 100 #200ms
 	bgeu t0, t1, fora_loop_input #delta time>200ms
 	call MUSIC_CALL
 	call INPUT_CALL

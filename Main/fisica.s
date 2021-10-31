@@ -1,6 +1,7 @@
 .data
-.eqv gravity_acc 1
-.eqv v_dash
+.eqv gravity_acc 2
+.eqv wall_slide_acc 1
+.eqv dash_speed
 .eqv h_resist 1
 .eqv m_h_resist -1
 .eqv v_resist 1
@@ -19,16 +20,16 @@ FISICA:
     lw t0, (a0)  #h_state (-1,0,1)
     lw t1, 4(a0) #v_state (-1,0,1)
     lw t2, 8(a0) #grounded
-    lw t3, 12(a0) #dash
+    lw t3, 12(a0) #dash_key
     lw t4, (a1) #h_speed
     lw t5, 4(a1) #v_speed)
      # atrito horizontal e vertical, velocidades máximas, gravidade 
      #
      #     
-     
-    addi t5, t5, gravity_acc
-    bgt  t0, zero, move_right
-    blt  t0, zero, move_left
+     blt t2, zero, wall_slide
+     addi t5, t5, gravity_acc
+movement:bgt  t0, zero, move_right
+     blt  t0, zero, move_left
     
 stop_h:  bgt t4, zero, stop_h_right
 	 blt t4, zero, stop_h_left
@@ -37,22 +38,55 @@ stop_h_right: addi t4,t4, m_h_resist
 	j air
 stop_h_left: addi t4,t4, h_resist
         j air                                                           
-                            
+        
+wall_slide: addi, t5,t5, wall_slide_acc
+	j movement
+                                                        
 move_right: addi t4,t4, h_acc
 	j stop_h
 move_left:  addi t4,t4 m_h_acc
 	j stop_h                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-air:    bgt t1, zero, jump
+air:    blt t1, zero, jump
+air2:	bgt t3, zero, exec_dash
 	j fim_fis
 
-jump:  bnez  t2, fim_fis
+jump:  	blt t2, zero, wall_jump
+	bgt  t2,zero, air2
 	addi t5,t5, v_acc
+	j air2
 
-      
-  
+wall_jump: lw a3, 20(a0) #wall
+	bgt   a3, zero, dir
+	addi t5,t5, v_acc
+	addi t4,t4 , h_acc
+        j fim_fis
+        
+dir:	addi t5,t5, v_acc
+	addi t4,t4 , m_h_acc
+        j fim_fis
     
-    
+exec_dash:  sw zero, 12(a0) #zera dash key
+	lw a3, 16(a0)  
+	beqz a3, fim_fis
+	#sw zero, 16(a0)  #zera dash
+	
+	bgt t0,zero, right_dash                  #t0 hstate, t1, vstate
+n_r_dash:blt t0, zero, left_dash
+n_l_dash:blt t1, zero, up_dash	
+n_u_dash:bgt t1, zero, down_dash
+	 j no_check
+
+right_dash: li t4, 20
+	j n_r_dash
+	
+left_dash: li t4, -20
+	j n_l_dash
+up_dash: li t5, -20
+	j n_u_dash
+down_dash:li t5, 20
+	j no_check	
+		
 		
 fim_fis:                #checagem de velocidades , t4=hspeed t5=vspeed
      #h check
@@ -74,10 +108,10 @@ v_over: mv t5, t6
     #Logica da FISICA
 no_check:
     #recolocada de valores
+    sw t5, 4(a1) #vspped
     sw t4, (a1) #h_speed
-    sw t5, 4(a1)
-    sw zero, (a0)
-    sw zero, 4(a0)
+    sw zero, (a0)   #hstate
+    sw zero, 4(a0)  #vstate
 		    
     lw ra, 0(sp)
     addi sp, sp, 4
