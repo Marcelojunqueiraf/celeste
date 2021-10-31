@@ -3,6 +3,8 @@
 .data
 h_state: .word 0
 v_state: .word 0
+grounded: .word 0
+dash: .word 0
 speed: .word 0, 4
 position: .word 72, 120
 old_position: .word 0, 100
@@ -51,8 +53,8 @@ MUSIC_CALL:
 INPUT_CALL:
 	addi sp, sp, -4 
 	sw ra, 0(sp)
-	#la a0, h_state #primeira flag
-	#call INPUT
+	la a0, h_state #primeira flag
+	call INPUT
 	lw ra, 0(sp)
 	addi sp, sp, 4
 	ret
