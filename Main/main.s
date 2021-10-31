@@ -19,39 +19,52 @@ character: .string "player.bin"
 lastTime: .word 0
 .text
 	call LOAD_IMAGES #carrega background e player
-
+	call SET_MUSIC #carrega a musica
+	
 	li a0, 100
 	li a7, 32
 	ecall #delay inicial
-game_loop:
-	csrr s11 time #s11= last time
-    input_loop:
-	csrr t0 time #t0=current time
-	sub t0 t0 s11 #t0 = delta time
-	li t1, 100 #200ms
-	bgeu t0, t1, fora_loop_input #delta time>200ms
 
-	# call MUSIC_CALL
-	call INPUT_CALL
-	li a0 10
-	li a7 32
-	ecall #delay 10ms
-    j input_loop
+	csrr s11, time #s11 = last time
+	j game_loop
+	
 fora_loop_input:
 	call FISICA_CALL
 	call MOVE_CALL
 	call RENDER_CALL
+	li t3, 0
+	csrr s11, time #s11 = last time
+game_loop:	
+	csrr s10, time #s10 = current time
+	sub s9, s10, s11 #s10 = delta time
+		
+	call INPUT_CALL
+	
+	li s8, 50	# tempo de cada frame
+	bltu s9, s8, game_loop
+	mv s11, s10 	# atualiza tempo anterior
+	add t3, t3, s9
+		
+	mv a0, s9
+	call MUSIC_CALL	# a0 = dT
+	
+	li s9, 100 #100ms
+	bgeu t3, s9, fora_loop_input #delta time > 100ms
+	
 	j game_loop
+	
+FIM:	li a7, 10		# Exit
+	ecall
 
 
 MUSIC_CALL: # a0 = dT. Lembrar que tem que ter na memoria qual a musica atual. <--- Quando implementar, adicionar no musica.s!! Por enquanto, Bad Apple
-	addi sp, sp, -4 
+    addi sp, sp, -4 
 	sw ra, 0(sp)
 	la a1, Musica0 # Le de variavel na memoria qual eh a musica atual e bota em a1
 	call MUSIC
-	lw ra, 0(sp)
-	addi sp, sp, 4
-	ret
+    lw ra, 0(sp)
+    addi sp, sp, 4
+    ret
 
 INPUT_CALL:
 	addi sp, sp, -4 
