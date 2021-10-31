@@ -5,11 +5,12 @@
 .eqv m_h_resist -1
 .eqv v_resist 1
 .eqv h_acc    5
-.eqv v_acc    3
-.eqv m_v_acc    -5
+.eqv m_h_acc    -5
+.eqv v_acc    -12
 .eqv h_max 8
 .eqv m_h_max -8
 .eqv v_max 12
+.eqv m_v_max -12
 .text
 FISICA:
     addi sp, sp, -4
@@ -37,12 +38,16 @@ stop_h_right: addi t4,t4, m_h_resist
 stop_h_left: addi t4,t4, h_resist
         j air                                                           
                             
-move_right: addi t4,t4, v_acc
+move_right: addi t4,t4, h_acc
 	j stop_h
-move_left:  addi t4,t4 m_v_acc
+move_left:  addi t4,t4 m_h_acc
 	j stop_h                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-air:
+air:    bgt t1, zero, jump
+	j fim_fis
+
+jump:  bnez  t2, fim_fis
+	addi t5,t5, v_acc
 
       
   
@@ -58,8 +63,8 @@ fim_fis:                #checagem de velocidades , t4=hspeed t5=vspeed
     #v check
  v_check:   li t6, v_max 
     bgt  t5,t6, v_over
-    li t6, m_h_max
-    blt t4, t6, v_over
+    li t6, m_v_max
+    blt t5, t6, v_over
     j no_check
 
 h_over: mv t4, t6
@@ -72,7 +77,8 @@ no_check:
     sw t4, (a1) #h_speed
     sw t5, 4(a1)
     sw zero, (a0)
-    
+    sw zero, 4(a0)
+		    
     lw ra, 0(sp)
     addi sp, sp, 4
     
