@@ -26,7 +26,6 @@ SET_MUSIC:	la a0, Musica0
 		sw a1, 32(a0)
 		ret
 
-
 # Rotina a0 = dT, a1 = Endereco da Array de tracks da musica atual
 MUSIC:	addi sp, sp, -4
 		sw ra, 0(sp) 
