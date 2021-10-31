@@ -1,14 +1,27 @@
-#a0=position(address) a1=speed(address) 
+#h_state: 0
+#v_state: 4
+#grounded: 8
+#dash_key: 12
+#dash: 16
+#wall: 20
+
+#a0=position(address) a1=speed(address) a2=flags
 MOVE:
-	addi sp, sp, -16
+	addi sp, sp, -20
 	sw ra, 0(sp)
 	sw s0, 4(sp)
 	sw s1, 8(sp)
 	sw s2, 12(sp)
+	sw s3, 16(sp)
 	
 	lw s2, 0(a1)
 	mv s0, a0
 	mv s1, a1
+	mv s3, a2
+	
+	li t0, 1
+	sw t0, 8(a2) #grounded = 1(air)
+	
 	bgt s2, zero, right
 	blt s2, zero, left
 	j move.vertical
@@ -16,26 +29,37 @@ MOVE:
 right:	
 	li t1, 4
 	blt s2, t1, move.vertical
+	mv a0, s0
+	mv a1, s1
+	mv a2, s3
 	call MOVE_R
 	addi s2, s2, -4
 	j right
 left:	li t1, -4
 	bgt s2, t1, move.vertical
+	mv a0, s0
+	mv a1, s1
+	mv a2, s3
 	call MOVE_L
 	addi s2, s2, 4
 	j left
 move.vertical:
-	mv a0, s0
-	mv a1, s1
+
 	lw s2, 4(a1)
 	bgt s2, zero, down
 	blt s2, zero, up
 	j move.fim
 up:	beq s2, zero, move.fim
+	mv a0, s0
+	mv a1, s1
+	mv a2, s3
 	call MOVE_U
 	addi s2, s2, 1
 	j up
 down:	beq s2, zero, move.fim
+	mv a0, s0
+	mv a1, s1
+	mv a2, s3
 	call MOVE_D
 	addi s2, s2, -1
 	j down
@@ -45,8 +69,10 @@ move.fim:
 	lw s0, 4(sp)
 	lw s1, 8(sp)
 	lw s2, 12(sp)
-	addi sp, sp, 16
+	lw s3, 16(sp)
+	addi sp, sp, 20
 	ret
+	
 #a0=position a1=speed a2=colider address
 MOVE_R:
 	addi sp, sp, -4
@@ -75,6 +101,10 @@ move_r.skip_death:
 	#check for blue
 	li t0, 0xc0c0c0c0
 	bne t1, t0, move_r.skip_wall
+	li t0 -1
+	sw t0, 8(a2) #grounded = -1(wall)
+	li t0 1
+	sw t0, 20(a2) #wall = 1(right)
 	sw zero 0(a1) #x speed = 0
 	j move_r.fim
 move_r.skip_wall:
@@ -117,7 +147,11 @@ move_l.skip_death:
 	#check for blue
 	li t0, 0xc0c0c0c0
 	bne t1, t0, move_l.skip_wall
+	li t0, -1
+	sw t0, 8(a2) #grounded = -1(wall)
+	sw t0, 20(a2) #wall = -1(left)
 	sw zero 0(a1) #x speed = 0
+	
 	j move_l.fim
 move_l.skip_wall:
 	addi t2, t2, 320
@@ -200,6 +234,9 @@ move_d.skip_death:
 	#check for blue
 	li t0, 0xc0c0c0c0
 	bne t1, t0, move_d.skip_wall
+	sw zero, 8(a2) #grounded = 0(ground)
+	li t0, 1
+	sw t0, 16(a2) #dash = 1 (enable dash)
 	sw zero 4(a1) #y speed = 0
 	j move_d.fim
 move_d.skip_wall:

@@ -30,7 +30,7 @@ game_loop:
 	sub t0 t0 s11 #t0 = delta time
 	li t1, 100 #200ms
 	bgeu t0, t1, fora_loop_input #delta time>200ms
-	call MUSIC_CALL
+	#call MUSIC_CALL
 	call INPUT_CALL
 	li a0 10
 	li a7 32
@@ -44,13 +44,13 @@ fora_loop_input:
 
 
 MUSIC_CALL:
-    addi sp, sp, -4 
+	addi sp, sp, -4 
 	sw ra, 0(sp)
-    li a0, 0 # a0 = dT. Lembrar que tem que ter na memoria qual a musica atual. <--- Quando implementar, adicionar no musica.s!!
+	li a0, 0 # a0 = dT. Lembrar que tem que ter na memoria qual a musica atual. <--- Quando implementar, adicionar no musica.s!!
 	call MUSIC
-    lw ra, 0(sp)
-    addi sp, sp, 4
-    ret
+	lw ra, 0(sp)
+	addi sp, sp, 4
+	ret
 
 INPUT_CALL:
 	addi sp, sp, -4 
@@ -76,6 +76,7 @@ MOVE_CALL:
 	la a0, position
 	la a1, speed
 	li a2, 0xff100000
+	la a3, h_state
 	call MOVE
 	lw ra, 0(sp)
 	addi sp, sp, 4
