@@ -31,7 +31,6 @@ lastTime: .word 0
 fora_loop_input:
 	call FISICA_CALL
 	call MOVE_CALL
-	call RENDER_CALL
 	li t3, 0
 	csrr s11, time #s11 = last time
 game_loop:	
@@ -47,6 +46,7 @@ game_loop:
 		
 	mv a0, s9
 	call MUSIC_CALL	# a0 = dT
+	call RENDER_CALL
 	
 	li s9, 100 #100ms
 	bgeu t3, s9, fora_loop_input #delta time > 100ms
