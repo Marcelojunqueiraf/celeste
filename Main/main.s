@@ -62,7 +62,8 @@ INPUT_CALL:
 FISICA_CALL:
 	addi sp, sp, -4 
 	sw ra, 0(sp)
-	li a0, 0 #set parameters
+	la a0, h_state #set parameters
+	la a1, speed
 	call FISICA
 	lw ra, 0(sp)
 	addi sp, sp, 4

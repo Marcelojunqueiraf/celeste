@@ -4,9 +4,9 @@
 .eqv h_resist 1
 .eqv m_h_resist -1
 .eqv v_resist 1
-.eqv h_acc    3
+.eqv h_acc    5
 .eqv v_acc    3
-.eqv m_v_acc    -3
+.eqv m_v_acc    -5
 .eqv h_max 8
 .eqv m_h_max -8
 .eqv v_max 12
@@ -61,7 +61,6 @@ fim_fis:                #checagem de velocidades , t4=hspeed t5=vspeed
     li t6, m_h_max
     blt t4, t6, v_over
     j no_check
-    sw t5, 4(a1)
 
 h_over: mv t4, t6
 	j v_check
@@ -72,6 +71,7 @@ no_check:
     #recolocada de valores
     sw t4, (a1) #h_speed
     sw t5, 4(a1)
+    sw zero, (a0)
     
     lw ra, 0(sp)
     addi sp, sp, 4
