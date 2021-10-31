@@ -80,6 +80,10 @@ MOVE_CALL:
 	li a2, 0xff100000
 	la a3, h_state
 	call MOVE
+	la a0, h_state
+	lw a0, 8(a0)
+	li a7 1
+	ecall
 	lw ra, 0(sp)
 	addi sp, sp, 4
 	ret

@@ -5,21 +5,22 @@
 #dash: 16
 #wall: 20
 
-#a0=position(address) a1=speed(address) a2=flags
+#a0=position(address) a1=speed(address) a2=colider a3=flags
 MOVE:
-	addi sp, sp, -20
+	addi sp, sp, -24
 	sw ra, 0(sp)
 	sw s0, 4(sp)
 	sw s1, 8(sp)
 	sw s2, 12(sp)
 	sw s3, 16(sp)
+	sw s4, 20(sp)
 	
-	lw s2, 0(a1)
 	mv s0, a0
 	mv s1, a1
 	mv s3, a2
+	mv s4, a3
 	
-	
+	lw s2, 0(s1) #s2 = x speed
 	bgt s2, zero, right
 	blt s2, zero, left
 	j move.vertical
@@ -30,6 +31,7 @@ right:
 	mv a0, s0
 	mv a1, s1
 	mv a2, s3
+	mv a3, s4
 	call MOVE_R
 	addi s2, s2, -4
 	j right
@@ -38,12 +40,13 @@ left:	li t1, -4
 	mv a0, s0
 	mv a1, s1
 	mv a2, s3
+	mv a3, s4
 	call MOVE_L
 	addi s2, s2, 4
 	j left
 move.vertical:
 
-	lw s2, 4(a1)
+	lw s2, 4(s1)
 	bgt s2, zero, down
 	blt s2, zero, up
 	j move.fim
@@ -51,6 +54,7 @@ up:	beq s2, zero, move.fim
 	mv a0, s0
 	mv a1, s1
 	mv a2, s3
+	mv a3, s4
 	call MOVE_U
 	addi s2, s2, 1
 	j up
@@ -58,6 +62,7 @@ down:	beq s2, zero, move.fim
 	mv a0, s0
 	mv a1, s1
 	mv a2, s3
+	mv a3, s4
 	call MOVE_D
 	addi s2, s2, -1
 	j down
@@ -68,17 +73,17 @@ move.fim:
 	lw s1, 8(sp)
 	lw s2, 12(sp)
 	lw s3, 16(sp)
-	addi sp, sp, 20
+	lw s4, 20(sp)
+	addi sp, sp, 24
 	ret
 	
-#a0=position a1=speed a2=colider address
+#a0=position a1=speed a2=colider address a3=flags
 MOVE_R:
 	addi sp, sp, -4
 	sw ra, 0(sp)
 	
 	lw t0, 0(a0) #position x
 	lw t1, 4(a0) #position y
-	#lw t2, 0(a2) #collider address
 	mv t2, a2
 	li t3, 320
 	add t2, t2, t0
@@ -100,9 +105,9 @@ move_r.skip_death:
 	li t0, 0xc0c0c0c0
 	bne t1, t0, move_r.skip_wall
 	li t0 -1
-	sw t0, 8(a2) #grounded = -1(wall)
+	sw t0, 8(a3) #grounded = -1(wall)
 	li t0 1
-	sw t0, 20(a2) #wall = 1(right)
+	sw t0, 20(a3) #wall = 1(right)
 	li t0, 4
 	sw t0 0(a1) #x speed = 4
 	j move_r.fim
@@ -118,7 +123,7 @@ move_r.fim:	lw ra, 0(sp)
 	addi sp, sp, 4 
 	ret
 	
-#a0=position a1=speed a2=colider address
+#a0=position a1=speed a2=colider address a3=flags
 MOVE_L:
 	addi sp, sp, -4
 	sw ra, 0(sp)
@@ -147,8 +152,8 @@ move_l.skip_death:
 	li t0, 0xc0c0c0c0
 	bne t1, t0, move_l.skip_wall
 	li t0, -1
-	sw t0, 8(a2) #grounded = -1(wall)
-	sw t0, 20(a2) #wall = -1(left)	
+	sw t0, 8(a3) #grounded = -1(wall)
+	sw t0, 20(a3) #wall = -1(left)	
 	li t0, -4
 	sw t0 0(a1) #x speed = -4
 	
@@ -165,7 +170,7 @@ move_l.fim:	lw ra, 0(sp)
 	addi sp, sp, 4 
 	ret
 	
-#a0=position a1=speed a2=colider address
+#a0=position a1=speed a2=colider address a3=flags
 MOVE_U:
 	addi sp, sp, -4
 	sw ra, 0(sp)
@@ -206,7 +211,7 @@ move_u.fim:  lw ra, 0(sp)
 	addi sp, sp, 4 
 	ret
 	
-#a0=position a1=speed a2=colider address
+#a0=position a1=speed a2=colider address a3=flags
 MOVE_D:
 	addi sp, sp, -4
 	sw ra, 0(sp)
@@ -234,9 +239,9 @@ move_d.skip_death:
 	#check for blue
 	li t0, 0xc0c0c0c0
 	bne t1, t0, move_d.skip_wall
-	sw zero, 8(a2) #grounded = 0(ground)
+	sw zero, 8(a3) #grounded = 0(ground)
 	li t0, 1
-	sw t0, 16(a2) #dash = 1 (enable dash)
+	sw t0, 16(a3) #dash = 1 (enable dash)
 	li t0, 4
 	sw t0 4(a1) #y speed = 4
 	j move_d.fim
