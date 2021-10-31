@@ -49,13 +49,13 @@ MUSIC_CALL:
     ret
 
 INPUT_CALL:
-    addi sp, sp, -4 
+	addi sp, sp, -4 
 	sw ra, 0(sp)
-    li a0, 0 #set parameters
-	call INPUT
-    lw ra, 0(sp)
-    addi sp, sp, 4
-    ret
+	#la a0, h_state #primeira flag
+	#call INPUT
+	lw ra, 0(sp)
+	addi sp, sp, 4
+	ret
 
 FISICA_CALL:
 	addi sp, sp, -4 

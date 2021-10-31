@@ -1,7 +1,9 @@
 #a0=position(address) a1=speed(address) 
 MOVE:
-	addi sp, sp, -4 
+	addi sp, sp, -12 
 	sw ra, 0(sp)
+	sw s0, 4(sp)
+	sw s1, 8(sp)
 	
 	lw t0, 0(a1)
 	mv s0, a0
@@ -28,7 +30,9 @@ down:	call MOVE_D
 	
 move.fim:
 	lw ra, 0(sp)
-	addi sp, sp, 4  
+	lw s0, 4(sp)
+	lw s1, 8(sp)
+	addi sp, sp, 12
 	ret
 #a0=position a1=speed a2=colider address
 MOVE_R:
