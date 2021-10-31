@@ -1,38 +1,51 @@
 #a0=position(address) a1=speed(address) 
 MOVE:
-	addi sp, sp, -12 
+	addi sp, sp, -16
 	sw ra, 0(sp)
 	sw s0, 4(sp)
 	sw s1, 8(sp)
+	sw s2, 12(sp)
 	
-	lw t0, 0(a1)
+	lw s2, 0(a1)
 	mv s0, a0
 	mv s1, a1
-	bgt t0, zero, right
-	blt t0, zero, left
+	bgt s2, zero, right
+	blt s2, zero, left
 	j move.vertical
 	
-right:	call MOVE_R
-	j move.vertical
-left:	call MOVE_L
-	j move.vertical
+right:	
+	li t1, 4
+	blt s2, t1, move.vertical
+	call MOVE_R
+	addi s2, s2, -4
+	j right
+left:	li t1, -4
+	bgt s2, t1, move.vertical
+	call MOVE_L
+	addi s2, s2, 4
+	j left
 move.vertical:
 	mv a0, s0
 	mv a1, s1
-	lw t0, 4(a1)
-	bgt t0, zero, down
-	blt t0, zero, up
+	lw s2, 4(a1)
+	bgt s2, zero, down
+	blt s2, zero, up
 	j move.fim
-up:	call MOVE_U
-	j move.fim
-down:	call MOVE_D
-	j move.fim
+up:	beq s2, zero, move.fim
+	call MOVE_U
+	addi s2, s2, 1
+	j up
+down:	beq s2, zero, move.fim
+	call MOVE_D
+	addi s2, s2, -1
+	j down
 	
 move.fim:
 	lw ra, 0(sp)
 	lw s0, 4(sp)
 	lw s1, 8(sp)
-	addi sp, sp, 12
+	lw s2, 12(sp)
+	addi sp, sp, 16
 	ret
 #a0=position a1=speed a2=colider address
 MOVE_R:
@@ -62,9 +75,7 @@ move_r.skip_death:
 	#check for blue
 	li t0, 0xc0c0c0c0
 	bne t1, t0, move_r.skip_wall
-	li a0 -2
-	li a7 1
-	ecall
+	sw zero 0(a1) #x speed = 0
 	j move_r.fim
 move_r.skip_wall:
 	addi t2, t2, 320
@@ -106,9 +117,7 @@ move_l.skip_death:
 	#check for blue
 	li t0, 0xc0c0c0c0
 	bne t1, t0, move_l.skip_wall
-	li a0 -2
-	li a7 1
-	ecall
+	sw zero 0(a1) #x speed = 0
 	j move_l.fim
 move_l.skip_wall:
 	addi t2, t2, 320
@@ -149,9 +158,7 @@ move_u.skip_death:
 	#check for blue
 	li t0, 0xc0c0c0c0
 	bne t1, t0, move_u.skip_wall
-	li a0 -2
-	li a7 1
-	ecall
+	sw zero 4(a1) #y speed = 0
 	j move_u.fim
 move_u.skip_wall:
 	addi t2, t2, 4
@@ -193,9 +200,7 @@ move_d.skip_death:
 	#check for blue
 	li t0, 0xc0c0c0c0
 	bne t1, t0, move_d.skip_wall
-	li a0 -2
-	li a7 1
-	ecall
+	sw zero 4(a1) #y speed = 0
 	j move_d.fim
 move_d.skip_wall:
 	addi t2, t2, 4
