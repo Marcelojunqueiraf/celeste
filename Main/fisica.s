@@ -70,7 +70,7 @@ v_over: mv t5, t6
 no_check:
     #recolocada de valores
     sw t4, (a1) #h_speed
-    
+    sw t5, 4(a1)
     
     lw ra, 0(sp)
     addi sp, sp, 4
