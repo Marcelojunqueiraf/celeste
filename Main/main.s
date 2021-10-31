@@ -46,8 +46,8 @@ fora_loop_input:
 MUSIC_CALL:
     addi sp, sp, -4 
 	sw ra, 0(sp)
-    li a0, 0 # a0 = dT. Lembrar que tem que ter na memoria qual a musica atual. <--- Quando implementar, adicionar no musica.s!!
-	call MUSIC
+    li a0, 0 #set parameters
+	call Music
     lw ra, 0(sp)
     addi sp, sp, 4
     ret

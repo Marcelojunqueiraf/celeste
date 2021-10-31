@@ -39,27 +39,27 @@ Music:
 		
 		
 # Rotina a0 = dT, a1 = Endereco da Array de tracks da musica atual
-UpdateTracks:	addi sp, sp, 4
+UpdateTracks:	addi sp, sp, -4
 		sw ra, 0(sp) 
 		
 		mv a2, a1
 		lw a3, 0(a2)
 		addi a2, a2, 4
 Loop0:		beqz a3, Fim0
-		addi sp, sp, 8
-		sw a2, -4(sp)
+		addi sp, sp, -8
+		sw a2, 4(sp)
 		sw a3, 0(sp)
 		lw a1, 0(a2)		# a1 = Endereco da Track atual
 		jal AttNotas
 		lw a3, 0(sp)	
-		lw a2, -4(sp)
-		addi sp, sp, -8
+		lw a2, 4(sp)
+		addi sp, sp, 8
 		addi a3, a3, -1
 		addi a2, a2, 4
 		j Loop0
 		
 Fim0:		lw ra, 0(sp)
-		addi sp, sp, -4
+		addi sp, sp, 4
 		ret			# Retorna o comando para Music
 		
 		
@@ -85,7 +85,7 @@ AttNotas:	lw a4, 8(a1) 		# a4 = Numero de notas restantes //
 		
 		beqz a4, Fim1
 		
-		addi sp, sp, 4
+		addi sp, sp, -4
 		sw a0, 0(sp)
 		addi a2, a2, 8
 		mv a4, a1
@@ -102,6 +102,6 @@ AttNotas:	lw a4, 8(a1) 		# a4 = Numero de notas restantes //
 		# a4, a5 are now free!
 		ecall
 		lw a0, 0(sp)
-		addi sp, sp, -4
+		addi sp, sp, 4
 		
 Fim1:		ret			# Retorna o comando para UpdateTracks
