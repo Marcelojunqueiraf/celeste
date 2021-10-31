@@ -31,7 +31,7 @@ lastTime: .word 0
 fora_loop_input:
 	call FISICA_CALL
 	call MOVE_CALL
-	li t3, 0
+	# li s7, 0
 	csrr s11, time #s11 = last time
 game_loop:	
 	csrr s10, time #s10 = current time
@@ -42,16 +42,17 @@ game_loop:
 	li s8, 50	# tempo de cada frame
 	bltu s9, s8, game_loop
 	mv s11, s10 	# atualiza tempo anterior
-	add t3, t3, s9
+	# add s7, s7, s9
 		
 	mv a0, s9
 	call MUSIC_CALL	# a0 = dT
 	call RENDER_CALL
 	
-	li s9, 100 #100ms
-	bgeu t3, s9, fora_loop_input #delta time > 100ms
+	# li s9, 100 #100ms
+	# bgeu s7, s9, fora_loop_input #delta time > 100ms
+	# j game_loop
 	
-	j game_loop
+	j fora_loop_input
 	
 FIM:	li a7, 10		# Exit
 	ecall
