@@ -1,7 +1,9 @@
+#a0 = primeira flag
 INPUT:
-    addi sp, sp, -4 
+	addi sp, sp, -4 
 	sw ra, 0(sp)
-    #Logica do input
-    lw ra, 0(sp)
-    addi sp, sp, 4
-    ret
+
+
+	lw ra, 0(sp)
+	addi sp, sp, 4
+	ret
