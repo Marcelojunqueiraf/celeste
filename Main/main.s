@@ -30,7 +30,8 @@ game_loop:
 	sub t0 t0 s11 #t0 = delta time
 	li t1, 100 #200ms
 	bgeu t0, t1, fora_loop_input #delta time>200ms
-	#call MUSIC_CALL
+
+	# call MUSIC_CALL
 	call INPUT_CALL
 	li a0 10
 	li a7 32
@@ -43,10 +44,10 @@ fora_loop_input:
 	j game_loop
 
 
-MUSIC_CALL:
+MUSIC_CALL: # a0 = dT. Lembrar que tem que ter na memoria qual a musica atual. <--- Quando implementar, adicionar no musica.s!! Por enquanto, Bad Apple
 	addi sp, sp, -4 
 	sw ra, 0(sp)
-	li a0, 0 # a0 = dT. Lembrar que tem que ter na memoria qual a musica atual. <--- Quando implementar, adicionar no musica.s!!
+	la a1, Musica0 # Le de variavel na memoria qual eh a musica atual e bota em a1
 	call MUSIC
 	lw ra, 0(sp)
 	addi sp, sp, 4
@@ -70,6 +71,7 @@ FISICA_CALL:
 	lw ra, 0(sp)
 	addi sp, sp, 4
 	ret	
+	
 MOVE_CALL:
     addi sp, sp, -4 
 	sw ra, 0(sp)
@@ -114,7 +116,6 @@ LOAD_IMAGES:
 	mv a0, t0
 	li a7 57
 	ecall #close file
-
 
 	#draw background in the start of the level
 	#open
