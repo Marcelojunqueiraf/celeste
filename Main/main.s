@@ -3,8 +3,8 @@
 .data
 h_state: .word 0
 v_state: .word 0
-speed: .word -4, 0
-position: .word 64, 92
+speed: .word 0, 4
+position: .word 72, 120
 old_position: .word 0, 100
 old_background: .space 256
 player: .space 256
@@ -33,10 +33,10 @@ game_loop:
 	ecall #delay 10ms
     j input_loop
 fora_loop_input:
-    call FISICA_CALL
+	call FISICA_CALL
 	call MOVE_CALL
 	call RENDER_CALL
-    j game_loop
+	j game_loop
 
 
 MUSIC_CALL:
