@@ -23,12 +23,15 @@ lastTime: .word 0
 
 game_loop:
 	csrr s11, time #s11 = last time
-	li s8, 50	# tempo de cada frame
+	li s8, 60	# tempo de cada frame
 	
 	input_loop:	
 		csrr s10, time #s10 = current time
 		sub s9, s10, s11 #s10 = delta time
 		call INPUT_CALL
+		li a0, 1
+		li a7 32
+		ecall
 	bltu s9, s8, input_loop
 	
 	mv a0, s9	# a0 = dT
@@ -66,6 +69,7 @@ FISICA_CALL:
 	la a0, h_state #set parameters
 	la a1, speed
 	call FISICA
+	
 	lw ra, 0(sp)
 	addi sp, sp, 4
 	ret	

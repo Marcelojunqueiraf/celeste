@@ -5,6 +5,10 @@
 #dash: 16
 #wall: 20
 
+.data
+dx: .word 0
+
+.text
 #a0=position(address) a1=speed(address) a2=colider a3=flags
 MOVE:
 	addi sp, sp, -24
@@ -21,6 +25,9 @@ MOVE:
 	mv s4, a3
 	
 	lw s2, 0(s1) #s2 = x speed
+	la t0, dx
+	lw t0, 0(t0)
+	add s2, s2, t0
 	bgt s2, zero, right
 	blt s2, zero, left
 	j move.vertical
@@ -108,8 +115,7 @@ move_r.skip_death:
 	sw t0, 8(a3) #grounded = -1(wall)
 	li t0 1
 	sw t0, 20(a3) #wall = 1(right)
-	li t0, 4
-	sw t0 0(a1) #x speed = 4
+	sw zero 0(a1) #x speed = 0
 	j move_r.fim
 move_r.skip_wall:
 	addi t2, t2, 320
@@ -154,8 +160,7 @@ move_l.skip_death:
 	li t0, -1
 	sw t0, 8(a3) #grounded = -1(wall)
 	sw t0, 20(a3) #wall = -1(left)	
-	li t0, -4
-	sw t0 0(a1) #x speed = -4
+	sw zero 0(a1) #x speed = -4
 	
 	j move_l.fim
 move_l.skip_wall:
@@ -231,9 +236,7 @@ colider_d.loop:
 	#check for red
 	li t0, 0x07070707
 	bne t1, t0, move_d.skip_death
-	li a0 -1
-	li a7 1
-	ecall
+	call die
 	j move_d.fim
 move_d.skip_death:
 	#check for blue
@@ -242,8 +245,11 @@ move_d.skip_death:
 	sw zero, 8(a3) #grounded = 0(ground)
 	li t0, 1
 	sw t0, 16(a3) #dash = 1 (enable dash)
-	li t0, 4
-	sw t0 4(a1) #y speed = 4
+	li t0, 0
+	sw t0 4(a1) #y speed = 0
+	#lw t0, 0(a1)
+	#srai t0, t0, 1
+	#sw t0, 0(a1)
 	j move_d.fim
 move_d.skip_wall:
 	addi t2, t2, 4
@@ -255,4 +261,13 @@ move_d.skip_wall:
 	
 move_d.fim:  lw ra, 0(sp)
 	addi sp, sp, 4 
+	ret
+
+die:
+	li t0, 72
+	sw t0, 0(s0)
+	li t0, 120
+	sw t0, 4(s0)
+	sw zero, 0(s1)
+	sw zero, 4(s1)
 	ret

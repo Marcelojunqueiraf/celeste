@@ -1,15 +1,15 @@
 .data
 .eqv gravity_acc 1
 .eqv wall_slide_acc 1
-.eqv dash_speed
+.eqv dash_speed 1
 .eqv h_resist 1
 .eqv m_h_resist -1
 .eqv v_resist 1
-.eqv h_acc    5
-.eqv m_h_acc    -5
-.eqv v_acc    -12
-.eqv h_max 8
-.eqv m_h_max -8
+.eqv h_acc    4
+.eqv m_h_acc   -4
+.eqv v_acc    -16
+.eqv h_max 6
+.eqv m_h_max -6
 .eqv v_max 12
 .eqv m_v_max -12
 .text
@@ -17,16 +17,16 @@ FISICA:
     addi sp, sp, -4
     sw ra, 0(sp)
     
-    lw t0, (a0)  #h_state (-1,0,1)
+    lw t0, 0(a0)  #h_state (-1,0,1)
     lw t1, 4(a0) #v_state (-1,0,1)
     lw t2, 8(a0) #grounded
     #
     mv t6, a0 
-    mv  a0,t2
+    mv  a0, t0
 	li a7 1
 	ecall
-	mv a0, t6
-	#
+    mv a0, t6
+	
     lw t3, 12(a0) #dash_key
     lw t4, (a1) #h_speed
     lw t5, 4(a1) #v_speed)
@@ -35,15 +35,29 @@ FISICA:
      #     
      blt t2, zero, wall_slide
      addi t5, t5, gravity_acc
+     srai t6, t5, 3
+     sub t5, t5, t6
 movement:bgt  t0, zero, move_right
      blt  t0, zero, move_left
     
-stop_h:  bgt t4, zero, stop_h_right
+stop_h:  #j air #disable friction
+	 bnez t2, air
+	 bgt t4, zero, stop_h_right
 	 blt t4, zero, stop_h_left
 	 j air
-stop_h_right: addi t4,t4, m_h_resist
+stop_h_right:
+	#li t6, 3
+	#div t6, t4, t6
+	#srai t6, t4, 2
+	#sub t4, t4, t6
+	addi t4,t4, m_h_resist
 	j air
-stop_h_left: addi t4,t4, h_resist
+stop_h_left: 
+	#li t6, 3
+	#div t6, t4, t6
+	#srai t6, t4, 2
+	#sub t4, t4, t6
+	addi t4,t4, h_resist
         j air                                                           
         
 wall_slide: addi, t5,t5, wall_slide_acc
