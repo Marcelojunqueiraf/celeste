@@ -1,12 +1,12 @@
 .data
 .eqv gravity_acc 1
 .eqv wall_slide_acc 1
-.eqv dash_speed
+.eqv dash_speed 1
 .eqv h_resist 1
 .eqv m_h_resist -1
 .eqv v_resist 1
-.eqv h_acc    5
-.eqv m_h_acc    -5
+.eqv h_acc    12
+.eqv m_h_acc    -12
 .eqv v_acc    -12
 .eqv h_max 8
 .eqv m_h_max -8
@@ -20,13 +20,7 @@ FISICA:
     lw t0, (a0)  #h_state (-1,0,1)
     lw t1, 4(a0) #v_state (-1,0,1)
     lw t2, 8(a0) #grounded
-    #
-    mv t6, a0 
-    mv  a0,t2
-	li a7 1
-	ecall
-	mv a0, t6
-	#
+
     lw t3, 12(a0) #dash_key
     lw t4, (a1) #h_speed
     lw t5, 4(a1) #v_speed)

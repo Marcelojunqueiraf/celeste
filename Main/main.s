@@ -12,12 +12,75 @@ position: .word 72, 120
 old_position: .word 0, 100
 old_background: .space 256
 player: .space 256
-fase1: .string "fase1.bin"
-#fase1: .string "fase1_colider.bin"
-colider1: .string "fase1_colider.bin"
 character: .string "player.bin"
 lastTime: .word 0
+#fase 1
+fase1: .string "../fases/fase2.bin"
+colider1: .string "../fases/fase2colider.bin"
+spawn1: .word 20, 140
+#fase 2
+fase2: .string "../fases/fase4.bin"
+colider2: .string "../fases/fase4colider.bin"
+spawn2: .word 20, 140
+#fase 3
+fase3: .string "../fases/fase1.bin"
+colider3: .string "../fases/fase1colider.bin"
+spawn3: .word 20, 160
+#fase 4
+fase4: .string "../fases/fase3.bin"
+colider4: .string "../fases/fase3colider.bin"
+spawn4: .word 20, 160
+#fase5
+fase5: .string "../fases/fase5.bin"
+colider5: .string "../fases/fase5colider.bin"
+spawn5: .word 20, 180
+#
+fases: .word 0,0,0 0,0,0 0,0,0 0,0,0 0,0,0
+fase_atual: .word 0
+spawn: .word 0, 0
 .text
+#load fases
+	la t0, fases
+	#fase1
+	la t1, fase1
+	sw t1, 0(t0)
+	la t1, colider1
+	sw t1, 4(t0)
+	la t1, spawn1
+	sw t1, 8(t0)
+	addi t0, t0, 12 
+	#fase2
+	la t1, fase2
+	sw t1, 0(t0)
+	la t1, colider2
+	sw t1, 4(t0)
+	la t1, spawn2
+	sw t1, 8(t0)
+	addi t0, t0, 12 
+	#fase3
+	la t1, fase3
+	sw t1, 0(t0)
+	la t1, colider3
+	sw t1, 4(t0)
+	la t1, spawn3
+	sw t1, 8(t0)
+	addi t0, t0, 12 
+	#fase4
+	la t1, fase4
+	sw t1, 0(t0)
+	la t1, colider4
+	sw t1, 4(t0)
+	la t1, spawn4
+	sw t1, 8(t0)
+	addi t0, t0, 12 
+	#fase5
+	la t1, fase5
+	sw t1, 0(t0)
+	la t1, colider5
+	sw t1, 4(t0)
+	la t1, spawn5
+	sw t1, 8(t0)
+lv_start:
 	call LOAD_IMAGES #carrega background e player
 	call SET_MUSIC #carrega a musica
 
@@ -32,7 +95,7 @@ game_loop:
 	bltu s9, s8, input_loop
 	
 	mv a0, s9	# a0 = dT
-	call MUSIC_CALL
+	#call MUSIC_CALL
 	call FISICA_CALL
 	call MOVE_CALL
 	call RENDER_CALL
@@ -114,10 +177,15 @@ LOAD_IMAGES:
 	mv a0, t0
 	li a7 57
 	ecall #close file
-
 	#draw background in the start of the level
 	#open
-	la a0, fase1
+	la a0, fases
+	la t0, fase_atual
+	lw t0, 0(t0)
+	li t1, 12
+	mul t0,t0,t1
+	add a0, a0, t0
+	lw a0, 0(a0)
 	li a1, 0
 	li a7, 1024
 	ecall#open file
@@ -133,7 +201,13 @@ LOAD_IMAGES:
 	ecall #close file
 	#draw background in the start of the level
 	#open
-	la a0, colider1
+	la a0, fases
+	la t0, fase_atual
+	lw t0, 0(t0)
+	li t1, 12
+	mul t0,t0,t1
+	add a0, a0, t0
+	lw a0, 4(a0)
 	li a1, 0
 	li a7, 1024
 	ecall#open file
@@ -147,6 +221,31 @@ LOAD_IMAGES:
 	mv a0, t0
 	li a7 57
 	ecall #close file
+	
+	la a0, fases
+	la t0, fase_atual
+	lw t0, 0(t0)
+	li t1, 12
+	mul t0,t0,t1
+	add a0, a0, t0
+	lw a0, 8(a0)
+	
+	lw t0, 0(a0)
+	lw t1, 4(a0)
+	la t2, position
+	la t3, spawn
+	sw t0, 0(t2)
+	sw t1, 4(t2)
+	sw t0, 0(t3)
+	sw t1, 4(t3)
+	
+	la t0, h_state #flags
+	sw zero, 0(t0)
+	sw zero, 4(t0)
+	sw zero, 8(t0)
+	sw zero, 12(t0)
+	sw zero, 16(t0)
+	sw zero, 20(t0)
 	
 	la s0 old_background
 	la s1 old_position

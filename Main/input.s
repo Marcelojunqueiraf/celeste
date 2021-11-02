@@ -33,12 +33,24 @@ SKIP_W:
 	li t3, 1
 	sw t3 4(a0) #v_state
 SKIP_S:
-	#check for s
+	#check for j
 	li t0, 'j'
 	bne t2, t0, SKIP_J
 	li t3, 1
 	sw t3 12(a0) #dash_key
 SKIP_J:
+	#check for n
+	li t0, 'n'
+	bne t2, t0, SKIP_N
+	la t0, fase_atual
+	lw t1, 0(t0)
+	addi t1, t1, 1
+	sw t1, 0(t0)
+	li a0, 200
+	li a7, 32
+	ecall
+	j lv_start
+SKIP_N:
 		  				  			# escreve a tecla pressionada no display
 FIM_INPUT:	
 	lw ra, 0(sp)

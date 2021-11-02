@@ -93,12 +93,15 @@ MOVE_R:
 	add t3, t3, t2
 colider_r.loop:	
 	lw t1, 16(t2)
+	#check for green
+	li t0, 0x38383838
+	bne t1, t0, move_r.skip_win
+	call win
+move_r.skip_win:
 	#check for red
 	li t0, 0x07070707
 	bne t1, t0, move_r.skip_death
-	li a0 -1
-	li a7 1
-	ecall
+	call die
 	j move_r.fim
 move_r.skip_death:
 	#check for blue
@@ -140,12 +143,15 @@ MOVE_L:
 	add t3, t3, t2
 colider_l.loop:	
 	lw t1, -4(t2)
+	#check for green
+	li t0, 0x38383838
+	bne t1, t0, move_l.skip_win
+	call win
+move_l.skip_win:
 	#check for red
 	li t0, 0x07070707
 	bne t1, t0, move_l.skip_death
-	li a0 -1
-	li a7 1
-	ecall
+	call die
 	j move_r.fim
 move_l.skip_death:
 	#check for blue
@@ -186,12 +192,15 @@ MOVE_U:
 	addi t3, t2, 16
 colider_u.loop:	
 	lw t1, -320(t2)
+	#check for green
+	li t0, 0x38383838
+	bne t1, t0, move_u.skip_win
+	call win
+move_u.skip_win:
 	#check for red
 	li t0, 0x07070707
 	bne t1, t0, move_u.skip_death
-	li a0 -1
-	li a7 1
-	ecall
+	call die
 	j move_u.fim
 move_u.skip_death:
 	#check for blue
@@ -226,14 +235,19 @@ MOVE_D:
 	li t0 5120
 	add t2, t2, t0
 	addi t3, t2, 16
+	
+
 colider_d.loop:	
 	lw t1, 0(t2)
+	#check for green
+	li t0, 0x38383838
+	bne t1, t0, move_d.skip_win
+	call win
+move_d.skip_win:
 	#check for red
 	li t0, 0x07070707
 	bne t1, t0, move_d.skip_death
-	li a0 -1
-	li a7 1
-	ecall
+	call die
 	j move_d.fim
 move_d.skip_death:
 	#check for blue
@@ -256,3 +270,21 @@ move_d.skip_wall:
 move_d.fim:  lw ra, 0(sp)
 	addi sp, sp, 4 
 	ret
+	
+die:
+	la t2, spawn
+	
+	lw t0, 0(t2)
+	sw t0, 0(a0)
+	lw t0, 4(t2)
+	sw t0, 4(a0)
+	sw zero, 0(a1)
+	sw zero, 4(a1)
+	ret
+win:
+	la t0, fase_atual
+	lw t1, 0(t0)
+	addi t1, t1, 1
+	sw t1, 0(t0)
+	j lv_start
+
