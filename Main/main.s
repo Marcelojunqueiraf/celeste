@@ -42,7 +42,7 @@ colider4: .string "../fases/fase3colider.bin"
 spawn4: .word 20, 160
 STR4: .string "aaa"
 #fase5
-fase5: .string "../fases/fase5colider.bin"
+fase5: .string "../fases/fase5.bin"
 colider5: .string "../fases/fase5colider.bin"
 spawn5: .word 20, 180
 STR5: .string "sanfvg"
@@ -102,6 +102,7 @@ portrait_buff: .space 3600
 	la t1, colider5
 	sw t1, 4(t0)
 	la t1, spawn5
+	sw t1, 8(t0)
 	la t1, STR5
 	sw t1, 12(t0)
 lv_start:
