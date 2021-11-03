@@ -19,7 +19,7 @@ character_low: .string "player.bin"
 
 
 
-portrait: .string "celeste.bin"
+portrait: .string "Dialog.bin"
 lastTime: .word 0
 #fase 1
 fase1: .string "../fases/fase2.bin"
@@ -121,7 +121,7 @@ game_loop:
 	bltu s9, s8, input_loop
 	
 	mv a0, s9	# a0 = dT
-	call MUSIC_CALL
+	#call MUSIC_CALL
 	call FISICA_CALL
 	call MOVE_CALL
 	call RENDER_CALL
@@ -319,10 +319,24 @@ LOAD_IMAGES:
 DIALOG:
 	addi sp, sp, -4
 	sw ra 0(sp)
-	li a0, 0
+	
+		
+	li a0,0
 	li a1, 180
-	li a3, 0
-	call DRAW_RECT
+	la a3, portrait_buff
+	call DRAW_SPRITE_DIALOG
+	
+	
+	
+	li a7, 4
+	la a0, fases
+	la t0, fase_atual
+	lw t0, 0(t0)
+	li t1, 16
+	mul t0,t0,t1
+	add a0, a0, t0
+	lw a0, 12(a0)
+	ecall 
 	
 	#texto
 	li a7 104
@@ -338,11 +352,7 @@ DIALOG:
 	lw a0, 12(a0)
 	ecall 
 	#texto
-	
-	li a0,0
-	li a1, 180
-	la a3, portrait_buff
-	call DRAW_SPRITE_DIALOG
+
 	lw ra, 0(sp)
 	addi sp, sp, 4
 
@@ -353,29 +363,7 @@ LOOP_J:	#check for j
 	bne t2, t0, LOOP_J
 	
 	ret
-DRAW_RECT:
-	addi sp, sp, -4 
-	sw ra, 0(sp)
-	li t0,0xFF000000 #endereco inicial do frame 0
-	li t1, 320
-	mul a1, a1, t1
-	add t0, t0, a1 #adiciona o y
-	add t0, t0, a0 #adiciona o x
-	li t2, 20480 #320*16
-	add t2, t0, t2 #inicio+height*screenwidth
-loop_y: beq t0, t2, FIM_DRAW #Checa se já passou da última fileira
-	addi t1, t0, 320 #inicio + width
-loop_x:	beq t0, t1, FORA_X_DRAW
-	#substituir por lw t3, 0()
-	sw a3, 0(t0) #Salvar t3 na memoria de video
-	addi t0, t0, 4 #próxima word
-	j loop_x
-FORA_X_DRAW: addi t0, t0, 0	#320-16 (Proxima linha)
-	j loop_y
-FIM_DRAW: 
-	lw ra, 0(sp)
-	addi sp, sp, 4
-	ret	
+
 	
 DRAW_SPRITE_DIALOG:
 	addi sp, sp, -4 
@@ -398,7 +386,7 @@ DRAW_SPRITE_DIALOG:
 loopD:	
 	mv a0, t0
 	mv a1, t3
-	li a2, 60 #size
+	li a2, 320 #size
 	li a7, 63 #read file
 	ecall
 	addi t3,t3,320
