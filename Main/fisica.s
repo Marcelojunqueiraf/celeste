@@ -5,8 +5,8 @@
 .eqv h_resist 1
 .eqv m_h_resist -1
 .eqv v_resist 1
-.eqv h_acc    7
-.eqv m_h_acc    -7
+.eqv h_acc    5
+.eqv m_h_acc    -5
 .eqv v_acc    -8
 .eqv h_max 10
 .eqv m_h_max -10
