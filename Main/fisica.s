@@ -95,7 +95,7 @@ yes_dash:
 	mv s1, a1
 	
 	li a0, 40
-	li a1, 200
+	li a1, 500
 	li a2, 119
 	li a3, 127
 	li a7, 31
