@@ -120,10 +120,12 @@ game_loop:
 		call INPUT_CALL
 	bltu s9, s8, input_loop
 	
-	mv a0, s9	# a0 = dT
 	la t0, mute
 	lw t0, 0(t0)
-	beqz t0 MUSIC_CALL
+	bnez t0 skip_music
+	mv a0, s9	# a0 = dT
+	call MUSIC_CALL
+skip_music:
 
 	call FISICA_CALL
 	call MOVE_CALL

@@ -51,13 +51,6 @@ DRAW_PLAYER:
 	mv a3, s3 #sprite
 	call DRAW_SPRITE
 
-	#draw morango
-	la t2, morango_position
-	lw a0, 0(s2) #X
-	lw a1, 4(s2) #Y
-	mv a3, s3 #sprite
-	call DRAW_SPRITE
-
 	lw ra, 0(sp)	
 	addi sp, sp, 4
 	ret
