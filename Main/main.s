@@ -21,6 +21,7 @@ character_low: .string "player.bin"
 
 portrait: .string "celeste.bin"
 lastTime: .word 0
+end: .string "../fases/end.bin"
 #fase 1
 fase1: .string "../fases/fase2.bin"
 colider1: .string "../fases/fase2colider.bin"
@@ -111,7 +112,7 @@ lv_start:
 	la t0, morango_enable
 	li t1, 1
 	sw t1, 0(t0) #liberar pegar morango
-	
+	beq t0, t1, EndGame
 	call LOAD_IMAGES #carrega background e player
 	call DIALOG
 	call LOAD_IMAGES
@@ -139,8 +140,22 @@ skip_music:
 	call RENDER_CALL
 j game_loop
 	
-FIM:	li a7, 10		# Exit
+EndGame:la a0, end #open end screen
+	li a1, 0
+	li a7, 1024
+	ecall#open file
+	mv t0, a0 #save descriptor
+	#read
+	li a1, 0xff000000 #frame 0
+	li a2, 76800 #size
+	li a7, 63 #read file
 	ecall
+	#close file
+	mv a0, t0
+	li a7 57
+	ecall #close file
+EndGame0:
+	j EndGame0
 
 
 MUSIC_CALL: # a0 = dT.  
