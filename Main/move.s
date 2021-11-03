@@ -113,6 +113,12 @@ move_r.skip_death:
 	sw t0, 20(a3) #wall = 1(right)
 	li t0, 4
 	sw t0 0(a1) #x speed = 4
+	li a0, 40
+	li a1, 150
+	li a2, 118
+	li a3, 127
+	li a7, 31
+	ecall
 	j move_r.fim
 move_r.skip_wall:
 	addi t2, t2, 320
@@ -162,7 +168,12 @@ move_l.skip_death:
 	sw t0, 20(a3) #wall = -1(left)	
 	li t0, -4
 	sw t0 0(a1) #x speed = -4
-	
+	li a0, 40
+	li a1, 150
+	li a2, 118
+	li a3, 127
+	li a7, 31
+	ecall
 	j move_l.fim
 move_l.skip_wall:
 	addi t2, t2, 320
