@@ -19,7 +19,7 @@ character_low: .string "player.bin"
 
 
 
-portrait: .string "Dialog.bin"
+portrait: .string "celeste.bin"
 lastTime: .word 0
 #fase 1
 fase1: .string "../fases/fase2.bin"
@@ -52,6 +52,8 @@ fase_atual: .word 0
 spawn: .word 0, 0
 mute: .word 0
 portrait_buff: .space 3600
+morango_enable: .word 0
+morangos: .word 0
 
 .text
 #load fases
@@ -106,6 +108,10 @@ portrait_buff: .space 3600
 	la t1, STR5
 	sw t1, 12(t0)
 lv_start:
+	la t0, morango_enable
+	li t1, 1
+	sw t1, 0(t0) #liberar pegar morango
+	
 	call LOAD_IMAGES #carrega background e player
 	call DIALOG
 	call LOAD_IMAGES
@@ -125,7 +131,6 @@ game_loop:
 	lw t0, 0(t0)
 	bnez t0 skip_music
 	mv a0, s9	# a0 = dT
-
 	call MUSIC_CALL
 skip_music:
 
@@ -326,24 +331,10 @@ LOAD_IMAGES:
 DIALOG:
 	addi sp, sp, -4
 	sw ra 0(sp)
-	
-		
-	li a0,0
+	li a0, 0
 	li a1, 180
-	la a3, portrait_buff
-	call DRAW_SPRITE_DIALOG
-	
-	
-	
-	li a7, 4
-	la a0, fases
-	la t0, fase_atual
-	lw t0, 0(t0)
-	li t1, 16
-	mul t0,t0,t1
-	add a0, a0, t0
-	lw a0, 12(a0)
-	ecall 
+	li a3, 0
+	call DRAW_RECT
 	
 	#texto
 	li a7 104
@@ -359,7 +350,11 @@ DIALOG:
 	lw a0, 12(a0)
 	ecall 
 	#texto
-
+	
+	li a0,0
+	li a1, 180
+	la a3, portrait_buff
+	call DRAW_SPRITE_DIALOG
 	lw ra, 0(sp)
 	addi sp, sp, 4
 
@@ -370,7 +365,29 @@ LOOP_J:	#check for j
 	bne t2, t0, LOOP_J
 	
 	ret
-
+DRAW_RECT:
+	addi sp, sp, -4 
+	sw ra, 0(sp)
+	li t0,0xFF000000 #endereco inicial do frame 0
+	li t1, 320
+	mul a1, a1, t1
+	add t0, t0, a1 #adiciona o y
+	add t0, t0, a0 #adiciona o x
+	li t2, 20480 #320*16
+	add t2, t0, t2 #inicio+height*screenwidth
+loop_y: beq t0, t2, FIM_DRAW #Checa se já passou da última fileira
+	addi t1, t0, 320 #inicio + width
+loop_x:	beq t0, t1, FORA_X_DRAW
+	#substituir por lw t3, 0()
+	sw a3, 0(t0) #Salvar t3 na memoria de video
+	addi t0, t0, 4 #próxima word
+	j loop_x
+FORA_X_DRAW: addi t0, t0, 0	#320-16 (Proxima linha)
+	j loop_y
+FIM_DRAW: 
+	lw ra, 0(sp)
+	addi sp, sp, 4
+	ret	
 	
 DRAW_SPRITE_DIALOG:
 	addi sp, sp, -4 
@@ -393,7 +410,7 @@ DRAW_SPRITE_DIALOG:
 loopD:	
 	mv a0, t0
 	mv a1, t3
-	li a2, 320 #size
+	li a2, 60 #size
 	li a7, 63 #read file
 	ecall
 	addi t3,t3,320

@@ -3,6 +3,9 @@
 #a1 = old_position
 #a2 = position
 #a3 = player
+.data
+morangos_text: .string "Pontos: "
+.text
 RENDER:
 	addi sp, sp, -20
 	sw ra, 0(sp)
@@ -17,6 +20,23 @@ RENDER:
 	mv s3 a3
 	
 	call DRAW_PLAYER
+
+	la a0, morangos_text
+	li a1, 4
+	li a2, 20
+	li a3, 0x0007
+	li a4, 0
+	li a7, 104
+	ecall
+
+	la t0, morangos
+	lw a0, 0(t0)
+	li a1, 60
+	li a2, 20
+	li a3, 0x0007
+	li a4, 0
+	li a7, 101
+	ecall
 
 	lw ra, 0(sp)	
 	sw s0, 4(sp)

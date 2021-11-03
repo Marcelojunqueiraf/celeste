@@ -92,7 +92,32 @@ MOVE_R:
 	li t3, 5120
 	add t3, t3, t2
 colider_r.loop:	
-	lw t1, 16(t2)
+	lw t1, 16(t2)		
+	#check for white
+	li t0, 0xffffffff
+	bne t1, t0, move_r.skip_morango
+	la t1, morango_enable
+	lw t0, 0(t1)
+	beqz t0, move_r.skip_morango
+	sw zero, 0(t1)
+	la t1, morangos
+	lw t0, 0(t1)
+	addi t0, t0, 1
+	sw t0, 0(t1)
+	
+	li a0, 70
+	li a1, 100
+	li a2, 114
+	li a3, 127
+	li a7, 31
+	ecall
+	
+	mv a0, s0
+	mv a1, s1
+	mv a2, s3
+	mv a3, s4
+	
+move_r.skip_morango:
 	#check for green
 	li t0, 0x38383838
 	bne t1, t0, move_r.skip_win
@@ -149,6 +174,31 @@ MOVE_L:
 	add t3, t3, t2
 colider_l.loop:	
 	lw t1, -4(t2)
+		#check for white
+	li t0, 0xffffffff
+	bne t1, t0, move_l.skip_morango
+	la t1, morango_enable
+	lw t0, 0(t1)
+	beqz t0, move_l.skip_morango
+	sw zero, 0(t1)
+	la t1, morangos
+	lw t0, 0(t1)
+	addi t0, t0, 1
+	sw t0, 0(t1)
+	
+	li a0, 70
+	li a1, 100
+	li a2, 114
+	li a3, 127
+	li a7, 31
+	ecall
+	
+	mv a0, s0
+	mv a1, s1
+	mv a2, s3
+	mv a3, s4
+	
+move_l.skip_morango:
 	#check for green
 	li t0, 0x38383838
 	bne t1, t0, move_l.skip_win
@@ -203,6 +253,30 @@ MOVE_U:
 	addi t3, t2, 16
 colider_u.loop:	
 	lw t1, -320(t2)
+	#check for white
+	li t0, 0xffffffff
+	bne t1, t0, move_u.skip_morango
+	la t1, morango_enable
+	lw t0, 0(t1)
+	beqz t0, move_u.skip_morango
+	sw zero, 0(t1)
+	la t1, morangos
+	lw t0, 0(t1)
+	addi t0, t0, 1
+	sw t0, 0(t1)
+	
+	li a0, 70
+	li a1, 100
+	li a2, 114
+	li a3, 127
+	li a7, 31
+	ecall
+	
+	mv a0, s0
+	mv a1, s1
+	mv a2, s3
+	mv a3, s4
+move_u.skip_morango:
 	#check for green
 	li t0, 0x38383838
 	bne t1, t0, move_u.skip_win
@@ -250,6 +324,31 @@ MOVE_D:
 
 colider_d.loop:	
 	lw t1, 0(t2)
+	#check for white
+	li t0, 0xffffffff
+	bne t1, t0, move_d.skip_morango
+	la t1, morango_enable
+	lw t0, 0(t1)
+	beqz t0, move_d.skip_morango
+	sw zero, 0(t1)
+	la t1, morangos
+	lw t0, 0(t1)
+	addi t0, t0, 1
+	sw t0, 0(t1)
+	
+	li a0, 70
+	li a1, 100
+	li a2, 114
+	li a3, 127
+	li a7, 31
+	ecall
+	
+	mv a0, s0
+	mv a1, s1
+	mv a2, s3
+	mv a3, s4
+	
+move_d.skip_morango:
 	#check for cyan
 	li t0, 0xf8f8f8f8
 	bne t1, t0, move_d.skip_cristal
@@ -258,7 +357,7 @@ colider_d.loop:
 	
 	li a0, 70
 	li a1, 100
-	li a2, 119
+	li a2, 114
 	li a3, 127
 	li a7, 31
 	ecall
