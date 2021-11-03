@@ -1,17 +1,17 @@
 .data
 .eqv gravity_acc 1
 .eqv wall_slide_acc 1
-.eqv dash_speed 1
+.eqv dash_speed
 .eqv h_resist 1
 .eqv m_h_resist -1
 .eqv v_resist 1
-.eqv h_acc    12
-.eqv m_h_acc    -12
+.eqv h_acc    5
+.eqv m_h_acc    -5
 .eqv v_acc    -12
-.eqv h_max 8
-.eqv m_h_max -8
-.eqv v_max 12
-.eqv m_v_max -12
+.eqv h_max 10
+.eqv m_h_max -10
+.eqv v_max 10
+.eqv m_v_max -10
 .text
 FISICA:
     addi sp, sp, -4
@@ -20,7 +20,13 @@ FISICA:
     lw t0, (a0)  #h_state (-1,0,1)
     lw t1, 4(a0) #v_state (-1,0,1)
     lw t2, 8(a0) #grounded
-
+    #
+    mv t6, a0 
+    mv  a0,t2
+	li a7 1
+	ecall
+	mv a0, t6
+	#
     lw t3, 12(a0) #dash_key
     lw t4, (a1) #h_speed
     lw t5, 4(a1) #v_speed)
@@ -85,14 +91,14 @@ n_l_dash:blt t1, zero, up_dash
 n_u_dash:bgt t1, zero, down_dash
 	 j no_check
 
-right_dash: li t4, 20
+right_dash: li t4, 16
 	j n_r_dash
 	
-left_dash: li t4, -20
+left_dash: li t4, -16
 	j n_l_dash
-up_dash: li t5, -20
+up_dash: li t5, -16
 	j n_u_dash
-down_dash:li t5, 20
+down_dash:li t5, 16
 	j no_check	
 		
 		
