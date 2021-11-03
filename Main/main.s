@@ -5,14 +5,16 @@ h_state: .word 0
 v_state: .word 0
 grounded: .word 0
 dash_key: .word 0
-dash:  .word 1
+dash:  .word 0
 wall: .word 0
 speed: .word 0, 4
 position: .word 72, 120
 old_position: .word 0, 100
 old_background: .space 256
 player: .space 256
-character: .string "player.bin"
+player_low: .space 256
+character: .string "playerlow.bin"
+character_low: .string "player.bin"
 lastTime: .word 0
 #fase 1
 fase1: .string "../fases/fase2.bin"
@@ -152,7 +154,11 @@ RENDER_CALL:
 	la a0 old_background
 	la a1 old_position
 	la a2 position
+	la t0, dash
+	lw t0, 0(t0)
+	slli t0, t0, 8
 	la a3 player
+	add a3, a3, t0
 	call RENDER
  	lw ra, 0(sp)
 	addi sp, sp, 4
@@ -177,6 +183,24 @@ LOAD_IMAGES:
 	mv a0, t0
 	li a7 57
 	ecall #close file
+	
+		#load player
+	#open
+	la a0, character_low
+	li a1, 0
+	li a7, 1024
+	ecall#open file
+	mv t0, a0 #save descriptor
+	#read
+	la a1, player_low #frame 0
+	li a2, 256 #size
+	li a7, 63 #read file
+	ecall
+	#close file
+	mv a0, t0
+	li a7 57
+	ecall #close file
+	
 	#draw background in the start of the level
 	#open
 	la a0, fases

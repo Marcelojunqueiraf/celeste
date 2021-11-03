@@ -244,6 +244,19 @@ colider_d.loop:
 	bne t1, t0, move_d.skip_tramp
 	li t0, -20
 	sw t0 4(a1) #y speed = 4
+	
+	li a0, 60
+	li a1, 500
+	li a2, 120
+	li a3, 127
+	li a7, 31
+	ecall
+	
+	mv a0, s0
+	mv a1, s1
+	mv a2, s3
+	mv a3, s4
+	
 move_d.skip_tramp:
 	#check for green
 	li t0, 0x38383838
