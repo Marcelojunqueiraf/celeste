@@ -121,7 +121,7 @@ game_loop:
 	bltu s9, s8, input_loop
 	
 	mv a0, s9	# a0 = dT
-	#call MUSIC_CALL
+	call MUSIC_CALL
 	call FISICA_CALL
 	call MOVE_CALL
 	call RENDER_CALL

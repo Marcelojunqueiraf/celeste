@@ -7,7 +7,7 @@
 .eqv v_resist 1
 .eqv h_acc    5
 .eqv m_h_acc    -5
-.eqv v_acc    -12
+.eqv v_acc    -8
 .eqv h_max 10
 .eqv m_h_max -10
 .eqv v_max 10
@@ -61,7 +61,11 @@ air2:	bgt t3, zero, exec_dash
 jump:  	sw zero, 4(a0)
 	blt t2, zero, wall_jump
 	bgt  t2,zero, air2
-	addi t5,t5, v_acc
+	li t5 v_acc
+	beqz t0, not_h
+	mv t4, t0
+	slli t4, t4, 3
+not_h:
 	li a3, 1
 	sw a3, 8(a0)
 	j air2
@@ -95,7 +99,7 @@ yes_dash:
 	mv s1, a1
 	
 	li a0, 40
-	li a1, 200
+	li a1, 500
 	li a2, 119
 	li a3, 127
 	li a7, 31

@@ -113,6 +113,12 @@ move_r.skip_death:
 	sw t0, 20(a3) #wall = 1(right)
 	li t0, 4
 	sw t0 0(a1) #x speed = 4
+	li a0, 40
+	li a1, 150
+	li a2, 118
+	li a3, 127
+	li a7, 31
+	ecall
 	j move_r.fim
 move_r.skip_wall:
 	addi t2, t2, 320
@@ -162,7 +168,12 @@ move_l.skip_death:
 	sw t0, 20(a3) #wall = -1(left)	
 	li t0, -4
 	sw t0 0(a1) #x speed = -4
-	
+	li a0, 40
+	li a1, 150
+	li a2, 118
+	li a3, 127
+	li a7, 31
+	ecall
 	j move_l.fim
 move_l.skip_wall:
 	addi t2, t2, 320
@@ -293,17 +304,38 @@ move_d.fim:  lw ra, 0(sp)
 die:
 	la t2, spawn
 	
+	
 	lw t0, 0(t2)
 	sw t0, 0(a0)
 	lw t0, 4(t2)
 	sw t0, 4(a0)
 	sw zero, 0(a1)
 	sw zero, 4(a1)
+	
+	li a0, 35
+	li a1, 350
+	li a2, 41
+	li a3, 127
+	li a7, 31
+	ecall
+	li a0, 36
+	ecall
+	
 	ret
 win:
 	la t0, fase_atual
 	lw t1, 0(t0)
 	addi t1, t1, 1
 	sw t1, 0(t0)
+	
+	li a0, 75
+	li a1, 500
+	li a2, 114
+	li a3, 63
+	li a7, 31
+	ecall
+	li a0, 76
+	ecall
+	
 	j lv_start
 
