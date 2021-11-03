@@ -79,6 +79,19 @@ exec_dash:  sw zero, 12(a0) #zera dash key
 	beqz a3, fim_fis
 	sw zero, 16(a0)  #zera dash
 	
+	mv s0, a0
+	mv s1, a1
+	
+	li a0, 40
+	li a1, 200
+	li a2, 119
+	li a3, 127
+	li a7, 31
+	ecall
+	
+	mv a0, s0
+	mv a1, s1
+	
 	bgt t0,zero, right_dash                  #t0 hstate, t1, vstate
 n_r_dash:blt t0, zero, left_dash
 n_l_dash:blt t1, zero, up_dash	
