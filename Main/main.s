@@ -42,7 +42,7 @@ colider4: .string "../fases/fase3colider.bin"
 spawn4: .word 20, 160
 STR4: .string "aaa"
 #fase5
-fase5: .string "../fases/fase5.bin"
+fase5: .string "../fases/fase5colider.bin"
 colider5: .string "../fases/fase5colider.bin"
 spawn5: .word 20, 180
 STR5: .string "sanfvg"
@@ -50,9 +50,9 @@ STR5: .string "sanfvg"
 fases: .word 0,0,0,0 0,0,0,0 0,0,0,0 0,0,0,0 0,0,0,0
 fase_atual: .word 0
 spawn: .word 0, 0
-
-
+mute: .word 0
 portrait_buff: .space 3600
+
 .text
 #load fases
 	la t0, fases
@@ -120,8 +120,14 @@ game_loop:
 		call INPUT_CALL
 	bltu s9, s8, input_loop
 	
+	la t0, mute
+	lw t0, 0(t0)
+	bnez t0 skip_music
 	mv a0, s9	# a0 = dT
-	#call MUSIC_CALL
+
+	call MUSIC_CALL
+skip_music:
+
 	call FISICA_CALL
 	call MOVE_CALL
 	call RENDER_CALL

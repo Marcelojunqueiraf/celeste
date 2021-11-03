@@ -39,6 +39,14 @@ SKIP_S:
 	li t3, 1
 	sw t3 12(a0) #dash_key
 SKIP_J:
+	#check for m
+	li t0, 'm'
+	bne t2, t0, SKIP_M
+	la t0, mute
+	lw t1, 0(t0)
+	xori, t1, t1, 0x1
+	sw t1, 0(t0)
+SKIP_M:
 	#check for n
 	li t0, 'n'
 	bne t2, t0, SKIP_N
