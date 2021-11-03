@@ -250,6 +250,26 @@ MOVE_D:
 
 colider_d.loop:	
 	lw t1, 0(t2)
+	#check for cyan
+	li t0, 0xf8f8f8f8
+	bne t1, t0, move_d.skip_cristal
+	li t0, 1
+	sw t0 16(a3)
+	
+	li a0, 70
+	li a1, 100
+	li a2, 119
+	li a3, 127
+	li a7, 31
+	ecall
+	
+	mv a0, s0
+	mv a1, s1
+	mv a2, s3
+	mv a3, s4
+	
+move_d.skip_cristal:
+	
 	#check for yellow
 	li t0, 0x3f3f3f3f
 	bne t1, t0, move_d.skip_tramp
