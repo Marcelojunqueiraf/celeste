@@ -83,14 +83,20 @@ dir:	li t5, -9
 exec_dash:  sw zero, 12(a0) #zera dash key
 	lw a3, 16(a0)  
 	beqz a3, fim_fis
+	beqz t0, no_dash
+	
+	
 	sw zero, 16(a0)  #zera dash
 	
+yes_dash:	
 	bgt t0,zero, right_dash                  #t0 hstate, t1, vstate
 n_r_dash:blt t0, zero, left_dash
 n_l_dash:blt t1, zero, up_dash	
 n_u_dash:bgt t1, zero, down_dash
 	 j no_check
 
+nodash:beqz t1, fim_fis
+	j yes_dash
 right_dash: li t4, 16
 	j n_r_dash
 	
