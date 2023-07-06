@@ -1,7 +1,7 @@
 .data
 .eqv gravity_acc 1
 .eqv wall_slide_acc 1
-.eqv dash_speed
+.eqv dash_speed 0
 .eqv h_resist 1
 .eqv m_h_resist -1
 .eqv v_resist 1
